@@ -1,30 +1,33 @@
-export const config = { runtime: 'edge' }
-
 /**
- * Notion API 프록시 — NOTION_TOKEN을 서버 측에서 주입
- * /api/notion/* → https://api.notion.com/*
+ * Notion API 프록시 — NOTION_TOKEN 서버 측 주입
+ * /api/notion/v1/* → https://api.notion.com/v1/*
  */
-export default async function handler(req: Request): Promise<Response> {
-  const url = new URL(req.url)
-  const path = url.pathname.replace(/^\/api\/notion/, '')
-  const targetUrl = `https://api.notion.com${path}${url.search}`
+export default async function handler(req: any, res: any) {
+  const segments: string[] = Array.isArray(req.query.path)
+    ? req.query.path
+    : [req.query.path].filter(Boolean)
 
-  const body =
-    req.method !== 'GET' && req.method !== 'HEAD' ? await req.text() : undefined
+  const path = '/' + segments.join('/')
+  const targetUrl = `https://api.notion.com${path}`
 
-  const upstream = await fetch(targetUrl, {
-    method: req.method,
-    headers: {
-      Authorization: `Bearer ${process.env.NOTION_TOKEN ?? ''}`,
-      'Notion-Version': '2022-06-28',
-      'Content-Type': 'application/json',
-    },
-    body,
-  })
+  const body = ['GET', 'HEAD'].includes(req.method)
+    ? undefined
+    : JSON.stringify(req.body)
 
-  const responseBody = await upstream.text()
-  return new Response(responseBody, {
-    status: upstream.status,
-    headers: { 'Content-Type': 'application/json' },
-  })
+  try {
+    const upstream = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_TOKEN ?? ''}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json',
+      },
+      body,
+    })
+
+    const data = await upstream.json()
+    res.status(upstream.status).json(data)
+  } catch (err) {
+    res.status(502).json({ error: 'Notion proxy error' })
+  }
 }

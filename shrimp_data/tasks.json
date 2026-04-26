@@ -338,7 +338,7 @@
       "id": "47cb265a-3108-4879-8514-22be13e92008",
       "name": "레시피 추가 페이지 구현",
       "description": "YouTube URL 입력 → 추출 로딩 → 미리보기 → Notion 저장 → 홈 리다이렉트. /add 라우터 등록 포함.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "08e63e75-5454-40d8-87a3-5bf257b8415a"
@@ -357,7 +357,7 @@
         }
       ],
       "createdAt": "2026-04-26T07:54:10.408Z",
-      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T09:36:20.317Z",
       "relatedFiles": [
         {
           "path": "src/pages/AddRecipePage.tsx",
@@ -372,13 +372,15 @@
       ],
       "implementationGuide": "1. router/index.tsx에 { path: 'add', element: <AddRecipePage /> } 추가\n2. src/pages/AddRecipePage.tsx:\n   - 상태: url, extractedData, isLoading, error\n   - handleExtract(): isValidYoutubeUrl → fetchMetadata → parseRecipe → setExtractedData\n   - handleSave(): createRecipe → navigate('/')\n   - 미리보기: 썸네일, 제목, 채널, 카테고리 Select, 재료/절차 textarea\n   - 추출 중: LoadingSpinner / 실패: ErrorMessage + 수동 입력 fallback",
       "verificationCriteria": "YouTube URL → 30초 내 재료·절차 미리보기. 저장 후 Notion DB 레코드 생성 및 홈 이동.",
-      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포",
+      "summary": "AddRecipePage.tsx 구현. URL 입력→추출→미리보기→저장→홈 리다이렉트 전체 흐름 완성. 카테고리 선택, 재료/절차 textarea 직접 편집 가능. 추출 실패 시 ErrorMessage + 수동 입력 fallback. router/index.tsx에 /add 라우트 등록. tsc 오류 없음.",
+      "completedAt": "2026-04-26T09:36:20.316Z"
     },
     {
       "id": "57c04c47-76a9-4372-8e3b-933a90529d5f",
       "name": "레시피 목록 홈 페이지 구현",
       "description": "Notion DB 레시피를 4열 카드 그리드와 페이지네이션(12개/페이지)으로 표시.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "08e63e75-5454-40d8-87a3-5bf257b8415a"
@@ -391,7 +393,7 @@
         }
       ],
       "createdAt": "2026-04-26T07:54:10.408Z",
-      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T09:36:22.970Z",
       "relatedFiles": [
         {
           "path": "src/pages/HomePage.tsx",
@@ -411,7 +413,9 @@
       ],
       "implementationGuide": "src/pages/HomePage.tsx 교체:\n1. useEffect로 listRecipes() 호출\n2. 카드 그리드: grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\n3. RecipeCard 사용\n4. 페이지네이션: 12개/페이지, 이전/다음 버튼\n5. 로딩: LoadingSpinner / 오류: ErrorMessage",
       "verificationCriteria": "Notion DB 레시피가 카드 그리드로 출력. 12개 초과 시 페이지네이션 동작.",
-      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포",
+      "summary": "HomePage.tsx 구현. listRecipes() useEffect 호출, 4열 카드 그리드(grid-cols-1 sm:grid-cols-2 lg:grid-cols-4), 12개/페이지 페이지네이션, 빈 상태/로딩/오류 처리 완성. tsc 오류 없음.",
+      "completedAt": "2026-04-26T09:36:22.969Z"
     },
     {
       "id": "598a2abe-618f-4759-986c-10ffaf791ac6",

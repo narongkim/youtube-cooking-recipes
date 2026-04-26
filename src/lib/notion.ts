@@ -1,16 +1,38 @@
-import { Client } from '@notionhq/client'
 import type { Recipe, RecipeFilter, ExtractedRecipe, Category, RecipeStatus } from '@/types'
 
-/**
- * Notion API 클라이언트
- * Vite proxy(/api/notion)를 통해 라우팅 — 실제 토큰은 proxy에서 서버 측 주입
- */
-const notion = new Client({
-  auth: 'proxy',
-  baseUrl: `${location.origin}/api/notion`,
-})
+const DB_ID = '34eff611-850f-80c6-ba91-e7fa4637dabb'
+const API_BASE = '/api/notion/v1'
 
-const DB_ID = '34eff611-850f-80ea-b857-000b0c5b3b11'
+/** Notion API fetch 래퍼 — Vite proxy가 Authorization 헤더를 주입 */
+async function notionFetch<T>(
+  path: string,
+  options: { method?: string; body?: unknown } = {}
+): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: options.method ?? 'GET',
+    headers: { 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+    ...(options.body !== undefined ? { body: JSON.stringify(options.body) } : {}),
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Notion API ${res.status}: ${text}`)
+  }
+  return res.json() as Promise<T>
+}
+
+/** 429 응답 시 지수 백오프로 최대 3회 재시도 */
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn()
+    } catch (err) {
+      const isRateLimit = (err as Error).message?.includes('429')
+      if (!isRateLimit || i === maxRetries - 1) throw err
+      await new Promise((res) => setTimeout(res, 2 ** i * 1000))
+    }
+  }
+  throw new Error('Notion API 재시도 초과')
+}
 
 /** rich_text 배열에서 텍스트 추출 */
 function getText(richText: unknown): string {
@@ -51,20 +73,6 @@ function notionPageToRecipe(page: unknown): Recipe {
   }
 }
 
-/** 429 응답 시 지수 백오프로 최대 3회 재시도 */
-async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn()
-    } catch (err) {
-      const isRateLimit = (err as { code?: string }).code === 'rate_limited'
-      if (!isRateLimit || i === maxRetries - 1) throw err
-      await new Promise((res) => setTimeout(res, 2 ** i * 1000))
-    }
-  }
-  throw new Error('Notion API 재시도 초과')
-}
-
 /** 레시피 목록 조회 (필터 선택) */
 export async function listRecipes(filter?: RecipeFilter): Promise<Recipe[]> {
   const andFilters: unknown[] = []
@@ -92,40 +100,45 @@ export async function listRecipes(filter?: RecipeFilter): Promise<Recipe[]> {
         : undefined
 
   const response = await withRetry(() =>
-    notion.dataSources.query({
-      data_source_id: DB_ID,
-      sorts: [{ timestamp: 'created_time', direction: 'descending' }] as never,
-      ...(queryFilter ? { filter: queryFilter as never } : {}),
+    notionFetch<{ results: unknown[] }>(`/databases/${DB_ID}/query`, {
+      method: 'POST',
+      body: {
+        sorts: [{ timestamp: 'created_time', direction: 'descending' }],
+        ...(queryFilter ? { filter: queryFilter } : {}),
+      },
     })
   )
 
-  return (response.results as unknown[]).map(notionPageToRecipe)
+  return response.results.map(notionPageToRecipe)
 }
 
 /** 레시피 단건 조회 */
 export async function getRecipe(id: string): Promise<Recipe> {
-  const page = await withRetry(() => notion.pages.retrieve({ page_id: id }))
+  const page = await withRetry(() => notionFetch<unknown>(`/pages/${id}`))
   return notionPageToRecipe(page)
 }
 
 /** 새 레시피 Notion DB에 저장 */
 export async function createRecipe(youtubeUrl: string, data: ExtractedRecipe): Promise<Recipe> {
   const page = await withRetry(() =>
-    notion.pages.create({
-      parent: { database_id: DB_ID },
-      properties: {
-        '제목': { title: [{ text: { content: data.title } }] },
-        '유튜브 링크': { url: youtubeUrl },
-        '채널명': { rich_text: [{ text: { content: data.channel } }] },
-        '썸네일': data.thumbnail
-          ? { files: [{ name: 'thumbnail', external: { url: data.thumbnail } }] }
-          : { files: [] },
-        '카테고리': { select: { name: data.category ?? '기타' } },
-        '재료': { rich_text: [{ text: { content: data.ingredients.slice(0, 2000) } }] },
-        '조리 절차': { rich_text: [{ text: { content: data.steps.slice(0, 2000) } }] },
-        '즐겨찾기': { checkbox: false },
-        '상태': { select: { name: '저장됨' } },
-      } as never,
+    notionFetch<unknown>('/pages', {
+      method: 'POST',
+      body: {
+        parent: { database_id: DB_ID },
+        properties: {
+          '제목': { title: [{ text: { content: data.title } }] },
+          '유튜브 링크': { url: youtubeUrl },
+          '채널명': { rich_text: [{ text: { content: data.channel } }] },
+          '썸네일': data.thumbnail
+            ? { files: [{ name: 'thumbnail', external: { url: data.thumbnail } }] }
+            : { files: [] },
+          '카테고리': { select: { name: data.category ?? '기타' } },
+          '재료': { rich_text: [{ text: { content: data.ingredients.slice(0, 2000) } }] },
+          '조리 절차': { rich_text: [{ text: { content: data.steps.slice(0, 2000) } }] },
+          '즐겨찾기': { checkbox: false },
+          '상태': { select: { name: '저장됨' } },
+        },
+      },
     })
   )
   return notionPageToRecipe(page)
@@ -139,5 +152,7 @@ export async function updateRecipe(
   const properties: Record<string, unknown> = {}
   if (patch.favorite !== undefined) properties['즐겨찾기'] = { checkbox: patch.favorite }
   if (patch.status !== undefined) properties['상태'] = { select: { name: patch.status } }
-  await withRetry(() => notion.pages.update({ page_id: id, properties: properties as never }))
+  await withRetry(() =>
+    notionFetch<unknown>(`/pages/${id}`, { method: 'PATCH', body: { properties } })
+  )
 }

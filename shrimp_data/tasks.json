@@ -131,14 +131,14 @@
       "id": "b431b9cb-f163-4519-9d1a-60dcad6d5606",
       "name": "TypeScript 도메인 타입 정의",
       "description": "src/types/index.ts에 Recipe, Category, RecipeStatus 등 핵심 타입 중앙 정의. 이후 모든 모듈의 타입 기반.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "d296d8b3-9a60-4851-8e70-760a1cb6dbeb"
         }
       ],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:23:33.590Z",
       "relatedFiles": [
         {
           "path": "src/types/index.ts",
@@ -153,7 +153,9 @@
       ],
       "implementationGuide": "src/types/index.ts 생성:\n- type Category = '한식' | '양식' | '중식' | '일식' | '기타'\n- type RecipeStatus = '저장됨' | '만들어봄' | '보관함'\n- interface Recipe { id, title, youtubeUrl, channel, thumbnail, category, ingredients, steps, favorite, status, createdAt }\n- interface RecipeFilter { search?: string, category?: Category, favoriteOnly?: boolean }\n- interface ExtractedRecipe { title, channel, thumbnail, ingredients, steps, category? }",
       "verificationCriteria": "tsc --noEmit 오류 없음. Recipe 타입 import 후 자동완성 정상 동작.",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": "src/types/index.ts 생성. Category, RecipeStatus 타입과 Recipe, RecipeFilter, ExtractedRecipe 인터페이스 정의. PRD 섹션 4 스키마 기준 완전 반영. tsc --noEmit 오류 없음.",
+      "completedAt": "2026-04-26T09:23:33.588Z"
     },
     {
       "id": "c9a63450-9e7a-4245-9ccf-4b9607f54a13",
@@ -301,14 +303,14 @@
       "id": "08e63e75-5454-40d8-87a3-5bf257b8415a",
       "name": "레이아웃 업데이트",
       "description": "Header에 '+ 레시피 추가' 버튼(/add 링크) 추가. 서비스 브랜딩 반영.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "13a583d1-3bb3-4a69-99ca-1dd6a2bc1529"
         }
       ],
       "createdAt": "2026-04-26T07:54:10.408Z",
-      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T09:23:36.227Z",
       "relatedFiles": [
         {
           "path": "src/components/layout/Header.tsx",
@@ -318,7 +320,9 @@
       ],
       "implementationGuide": "src/components/layout/Header.tsx:\n1. 기존 'My Starter Kit' 로고 텍스트 → '유튜브 레시피'로 변경\n2. nav 영역에 shadcn/ui Button 또는 NavLink로 '+ 레시피 추가' 버튼 추가 → /add 링크",
       "verificationCriteria": "Header에 '+ 레시피 추가' 클릭 시 /add로 이동. 로고 텍스트 변경 확인.",
-      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포",
+      "summary": "Header.tsx 업데이트: 로고 텍스트 \"My Starter Kit\" → \"🍳 유튜브 레시피\" 변경, /add 링크 연결된 \"+ 레시피 추가\" 버튼 추가. 불필요한 Home 네비게이션 제거. tsc --noEmit 오류 없음.",
+      "completedAt": "2026-04-26T09:23:36.221Z"
     },
     {
       "id": "47cb265a-3108-4879-8514-22be13e92008",

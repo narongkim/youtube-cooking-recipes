@@ -2,8 +2,8 @@
  * Notion API 프록시 — NOTION_TOKEN 서버 측 주입
  * /api/notion/v1/* → https://api.notion.com/v1/*
  */
-export default async function handler(req: any, res: any) {
-  const segments: string[] = Array.isArray(req.query.path)
+export default async function handler(req, res) {
+  const segments = Array.isArray(req.query.path)
     ? req.query.path
     : [req.query.path].filter(Boolean)
 

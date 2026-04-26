@@ -107,10 +107,10 @@
       "name": "Notion Integration 및 레시피 DB 스키마 설정",
       "description": "Notion 워크스페이스에 Integration 생성 및 PRD 섹션 4 기준 레시피 DB 스키마 구성. Notion 웹 UI 작업 위주.",
       "notes": "DB ID는 notion.so/워크스페이스/[DB_ID]?v=... 형태로 추출.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:28:01.295Z",
       "relatedFiles": [
         {
           "path": "docs/PRD.md",
@@ -125,7 +125,9 @@
       ],
       "implementationGuide": "1. Notion Settings → Integrations → New integration 생성 → NOTION_TOKEN 복사\n2. 레시피 DB 필드 생성: Title(title), YouTube URL(url), Channel(rich_text), Thumbnail(files), Category(select: 한식/양식/중식/일식/기타), Ingredients(rich_text), Steps(rich_text), Favorite(checkbox), Status(select: 저장됨/만들어봄/보관함), Created At(created_time)\n3. DB를 Integration과 Share 연결\n4. DB ID → NOTION_DATABASE_ID에 저장",
       "verificationCriteria": "Notion DB에 테스트 레코드 수동 생성·조회 성공. 두 환경 변수 모두 .env.local에 설정 완료.",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": "Notion Integration 연결 및 recipe DB 스키마 확인 완료. 속성 10개(제목/유튜브링크/채널명/썸네일/카테고리/재료/조리절차/즐겨찾기/상태/추출일시) 정상 등록. NOTION_DATABASE_ID 오타 수정 완료. dataSources API로 연결 검증.",
+      "completedAt": "2026-04-26T09:28:01.294Z"
     },
     {
       "id": "b431b9cb-f163-4519-9d1a-60dcad6d5606",

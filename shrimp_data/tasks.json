@@ -163,7 +163,7 @@
       "id": "c9a63450-9e7a-4245-9ccf-4b9607f54a13",
       "name": "Notion API 클라이언트 모듈 구현",
       "description": "@notionhq/client 래퍼. Notion 응답 → Recipe 변환 유틸과 listRecipes/getRecipe/createRecipe/updateRecipe 함수.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "b431b9cb-f163-4519-9d1a-60dcad6d5606"
@@ -173,7 +173,7 @@
         }
       ],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:33:57.326Z",
       "relatedFiles": [
         {
           "path": "src/lib/notion.ts",
@@ -188,21 +188,23 @@
       ],
       "implementationGuide": "1. @notionhq/client 설치\n2. src/lib/notion.ts 생성\n3. Client 초기화 (baseUrl: '/api/notion' proxy 경유)\n4. notionPageToRecipe(page): Recipe 변환 유틸\n5. listRecipes(filter?: RecipeFilter): Promise<Recipe[]>\n6. getRecipe(id: string): Promise<Recipe>\n7. createRecipe(data: ExtractedRecipe): Promise<Recipe>\n8. updateRecipe(id, patch: Partial<Pick<Recipe,'favorite'|'status'>>): Promise<void>\n9. 429 응답 시 지수 백오프 재시도 (최대 3회)",
       "verificationCriteria": "listRecipes() 호출 시 Recipe[] 반환. createRecipe() 후 Notion DB 레코드 생성 확인.",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": "src/lib/notion.ts 구현. @notionhq/client v5 dataSources.query API 사용. Vite proxy 인증 헤더 주입으로 토큰 보호. notionPageToRecipe 변환, listRecipes/getRecipe/createRecipe/updateRecipe 함수, 지수 백오프 재시도 로직 구현. tsc 오류 없음.",
+      "completedAt": "2026-04-26T09:33:57.325Z"
     },
     {
       "id": "283ef5a4-8670-4979-995e-6c6d093c5ad0",
       "name": "YouTube 정보 추출 모듈 구현",
       "description": "oEmbed API로 메타데이터 수집. URL 유효성 검사 및 video ID 파싱 포함.",
       "notes": "oEmbed는 클라이언트 직접 호출 가능. yt-dlp는 추후 서버리스 함수에서 처리.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "b431b9cb-f163-4519-9d1a-60dcad6d5606"
         }
       ],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:34:00.217Z",
       "relatedFiles": [
         {
           "path": "src/lib/youtube.ts",
@@ -217,13 +219,15 @@
       ],
       "implementationGuide": "src/lib/youtube.ts 생성:\n1. extractVideoId(url: string): string | null\n2. isValidYoutubeUrl(url: string): boolean\n3. fetchMetadata(videoId: string): Promise<{title, channel, thumbnail}> - oEmbed 호출\n4. fetchSubtitles(videoId: string): Promise<string> - yt-dlp stub (클라이언트 사이드는 빈 문자열 반환, description fallback)",
       "verificationCriteria": "유효한 YouTube URL → title·channel·thumbnail 반환. 잘못된 URL → null 반환.",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": "src/lib/youtube.ts 구현. extractVideoId(youtube.com/youtu.be 모두 지원), isValidYoutubeUrl, fetchMetadata(oEmbed API), fetchSubtitles(클라이언트 stub) 구현. tsc 오류 없음.",
+      "completedAt": "2026-04-26T09:34:00.214Z"
     },
     {
       "id": "86db6995-a983-4486-82df-e657e98df533",
       "name": "LLM 파싱 모듈 구현",
       "description": "자막/설명 텍스트 전처리 후 LLM에 전달해 재료·조리 절차를 마크다운으로 파싱.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "b431b9cb-f163-4519-9d1a-60dcad6d5606"
@@ -233,7 +237,7 @@
         }
       ],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:34:03.900Z",
       "relatedFiles": [
         {
           "path": "src/lib/llm.ts",
@@ -248,13 +252,15 @@
       ],
       "implementationGuide": "src/lib/llm.ts 생성:\n1. preprocessText(text: string): string - 타임스탬프·광고 문구 제거\n2. parseRecipe(text: string): Promise<{ingredients: string, steps: string}>\n   - OpenAI Chat Completions 호출\n   - 시스템 프롬프트: 재료와 조리 절차를 마크다운 목록으로 추출\n   - 실패 시 { ingredients: '', steps: '' } 반환 (throw 금지)",
       "verificationCriteria": "샘플 자막 전달 시 ingredients·steps 객체 반환. API 오류 시 빈 구조체 반환 (예외 없음).",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": "src/lib/llm.ts 구현. OpenAI proxy 라우팅(/api/openai), preprocessText(타임스탬프·URL·해시태그 제거), parseRecipe(gpt-4o-mini json_object 모드). 실패 시 빈 구조체 반환(throw 없음). tsc 오류 없음.",
+      "completedAt": "2026-04-26T09:34:03.895Z"
     },
     {
       "id": "4d4cc3d1-8e02-4dee-9564-b315a46bba3c",
       "name": "공통 UI 컴포넌트 구현",
       "description": "RecipeCard, CategoryBadge, LoadingSpinner, ErrorMessage, StatusDropdown 5개 재사용 컴포넌트 구현.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "13a583d1-3bb3-4a69-99ca-1dd6a2bc1529"
@@ -264,7 +270,7 @@
         }
       ],
       "createdAt": "2026-04-26T07:54:10.408Z",
-      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T09:34:06.738Z",
       "relatedFiles": [
         {
           "path": "src/components/ui/RecipeCard.tsx",
@@ -299,7 +305,9 @@
       ],
       "implementationGuide": "src/components/ui/ 하위 생성:\n- RecipeCard: img(loading=lazy), 제목, 채널, CategoryBadge, Heart 아이콘, /recipe/:id NavLink\n- CategoryBadge: 카테고리별 색상 shadcn/ui Badge\n- LoadingSpinner: Tailwind animate-spin 원형\n- ErrorMessage: AlertCircle 아이콘 + 메시지 + 재시도 버튼\n- StatusDropdown: shadcn/ui Select, RecipeStatus 3개 옵션",
       "verificationCriteria": "5개 컴포넌트 모두 오류 없이 렌더링. tsc 오류 없음.",
-      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포",
+      "summary": "RecipeCard/CategoryBadge/LoadingSpinner/ErrorMessage/StatusDropdown 5개 컴포넌트 구현. RecipeCard는 lazy-load 썸네일·즐겨찾기 아이콘·NavLink 포함. CategoryBadge는 카테고리별 색상. StatusDropdown은 shadcn Select 활용. tsc 오류 없음.",
+      "completedAt": "2026-04-26T09:34:06.737Z"
     },
     {
       "id": "08e63e75-5454-40d8-87a3-5bf257b8415a",

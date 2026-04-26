@@ -4,10 +4,10 @@
       "id": "d296d8b3-9a60-4851-8e70-760a1cb6dbeb",
       "name": "프로젝트 골격 설정",
       "description": "서비스 개발을 위한 디렉토리 구조 확립, 경로 별칭 설정, 스타터 예제 코드 제거. 이후 모든 태스크의 기반.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:18:14.582Z",
       "relatedFiles": [
         {
           "path": "vite.config.ts",
@@ -27,20 +27,22 @@
       ],
       "implementationGuide": "1. 빈 디렉토리 생성: src/types/, src/lib/, src/hooks/, src/components/ui/\n2. vite.config.ts resolve.alias 추가: { '@': '/src' }\n3. src/store/useCounterStore.ts 삭제\n4. src/pages/HomePage.tsx에서 카운터 관련 코드 전부 제거 (빈 div 또는 placeholder만 남김)\n5. src/assets/.gitkeep 확인",
       "verificationCriteria": "npm run dev 정상 실행. HomePage에 카운터 UI 없음. src/types/, src/lib/, src/hooks/, src/components/ui/ 디렉토리 존재.",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": "src/types/, src/lib/, src/hooks/, src/components/ui/ 디렉토리 생성 완료. vite.config.ts에 path.resolve 기반 @ 별칭 추가. tsconfig.app.json에 paths 설정 추가. @types/node 설치. useCounterStore.ts 삭제. HomePage.tsx에서 카운터 UI 완전 제거. tsc --noEmit 오류 없음.",
+      "completedAt": "2026-04-26T09:18:14.580Z"
     },
     {
       "id": "13a583d1-3bb3-4a69-99ca-1dd6a2bc1529",
       "name": "UI 라이브러리 설치 및 초기화",
       "description": "shadcn/ui 초기화, Lucide React 설치, tsconfig 경로 별칭 타입 추가.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "d296d8b3-9a60-4851-8e70-760a1cb6dbeb"
         }
       ],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:20:18.365Z",
       "relatedFiles": [
         {
           "path": "package.json",
@@ -60,16 +62,18 @@
       ],
       "implementationGuide": "1. npx shadcn@latest init 실행 (Tailwind v4 호환 옵션)\n2. npm install lucide-react\n3. shadcn/ui 기본 컴포넌트 추가: Button, Select, Badge, Checkbox\n4. tsconfig.app.json compilerOptions.paths에 '@/*': ['./src/*'] 추가",
       "verificationCriteria": "shadcn/ui Button 임포트·렌더링 확인. lucide-react Heart 아이콘 정상 출력. @/components/... 임포트 tsc 오류 없음.",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": "shadcn@latest init -d로 Tailwind v4 호환 초기화 완료. tsconfig.json 루트에 paths 추가 후 별칭 인식 성공. lucide-react 설치, Button/Select/Badge/Checkbox 컴포넌트 추가. tsc --noEmit 오류 없음.",
+      "completedAt": "2026-04-26T09:20:18.364Z"
     },
     {
       "id": "c0ba99de-35c3-4583-9529-f422484a3f30",
       "name": "환경 변수 및 Vite proxy 설정",
       "description": ".env.local, .env.example 생성. Notion API CORS 우회를 위한 dev server proxy 설정.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2026-04-26T07:53:14.644Z",
-      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T09:20:21.719Z",
       "relatedFiles": [
         {
           "path": ".env.example",
@@ -94,7 +98,9 @@
       ],
       "implementationGuide": "1. .env.example 생성: NOTION_TOKEN=, NOTION_DATABASE_ID=, OPENAI_API_KEY=\n2. .env.local 생성 (실제 값)\n3. vite.config.ts server.proxy 추가: '/api/notion' → { target: 'https://api.notion.com', changeOrigin: true, rewrite: path => path.replace(/^\\/api\\/notion/, '') }\n4. .gitignore에 .env.local 포함 확인",
       "verificationCriteria": ".env.local이 git status 미추적. /api/notion 요청이 Notion API로 프록시됨.",
-      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지.",
+      "summary": ".env.example 생성(NOTION_TOKEN, NOTION_DATABASE_ID, OPENAI_API_KEY). .env.local 변수명 정리(NOTION_API_KEY→NOTION_TOKEN, NOTION DATABASE_ID→NOTION_DATABASE_ID). vite.config.ts server.proxy에 /api/notion → https://api.notion.com changeOrigin 설정. .gitignore에 .env.local 이미 포함 확인.",
+      "completedAt": "2026-04-26T09:20:21.717Z"
     },
     {
       "id": "70e47654-1872-4d1d-af8a-5f2dd32ad69c",

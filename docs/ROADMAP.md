@@ -10,11 +10,13 @@
 ## 개발 순서 한눈에 보기
 
 ```
-Phase 1          Phase 2            Phase 3             Phase 4           Phase 5
-프로젝트          공통 모듈/           핵심 기능             추가 기능           최적화 및
-초기 설정   →    컴포넌트 개발   →    개발           →     개발         →     배포
-(1~2일)          (2~3일)            (5~7일)             (3~4일)           (2~3일)
+Phase 1          Phase 2-1          Phase 2-2          Phase 3             Phase 4           Phase 5
+프로젝트          공통 API            공통               핵심 기능             추가 기능           최적화 및
+골격 구축   →    함수 개발     →    컴포넌트 개발  →    개발           →     개발         →     배포
+(1~2일)          (1~2일)            (1~2일)            (5~7일)             (3~4일)           (2~3일)
 ```
+
+> ✅ **골격 → 공통 API → 공통 컴포넌트 → 개별 기능** 순서로 진행
 
 ---
 
@@ -28,46 +30,45 @@ Phase 1          Phase 2            Phase 3             Phase 4           Phase 
 
 ### 작업 목록
 
-#### 1-1. Next.js 15 프로젝트 생성
-- `create-next-app`으로 App Router 기반 프로젝트 생성
-- TypeScript 설정 (`tsconfig.json` 경로 별칭 포함)
-- 폴더 구조 확정
+#### 1-1. 프로젝트 골격 설정 (디렉토리 구조 확립)
+- 서비스 개발에 필요한 디렉토리 생성 (`src/types/`, `src/lib/`, `src/hooks/`, `src/components/ui/`)
+- `vite.config.ts`에 경로 별칭 설정 (`@` → `src/`)
+- 스타터 예제 코드 제거 (`useCounterStore.ts`, `HomePage` 카운터 UI)
+- 서비스용 빈 `HomePage` 골격 유지
 
 ```
 src/
-├── app/                  # Next.js App Router 페이지
-│   ├── page.tsx          # 홈 (레시피 목록)
-│   ├── add/page.tsx      # 레시피 추가
-│   ├── recipe/[id]/      # 레시피 상세
-│   └── api/              # API Route
-│       ├── extract/
-│       └── recipes/
+├── App.tsx               # RouterProvider 진입점 (변경 없음)
+├── main.tsx              # React DOM 진입점 (변경 없음)
+├── index.css             # Tailwind 글로벌 스타일 (변경 없음)
 ├── components/
-│   ├── layout/           # Header, Layout
-│   └── ui/               # 공통 UI 컴포넌트
-├── lib/                  # 외부 API 클라이언트 (Notion, YouTube, LLM)
-├── types/                # TypeScript 타입 정의
-└── hooks/                # 커스텀 훅
+│   ├── layout/           # Header, Layout (기존 유지)
+│   └── ui/               # 공통 UI 컴포넌트 (신규 디렉토리)
+├── hooks/                # 커스텀 훅 (신규 디렉토리)
+├── lib/                  # 외부 API 클라이언트 (신규 디렉토리)
+├── pages/
+│   ├── HomePage.tsx      # 골격만 유지 (카운터 예제 제거)
+│   └── NotFoundPage.tsx  # 유지
+├── router/
+│   └── index.tsx         # 라우트 중앙 관리 (유지)
+├── store/                # Zustand 스토어 (useCounterStore 제거)
+└── types/                # TypeScript 타입 정의 (신규 디렉토리)
 ```
 
 #### 1-2. UI 라이브러리 설정
-- Tailwind CSS v4 설치 및 기본 테마 설정
-- shadcn/ui 초기화 (`npx shadcn@latest init`)
+- shadcn/ui 초기화 (`npx shadcn@latest init`, Tailwind v4 호환)
 - Lucide React 설치
+- `tsconfig.app.json`에 경로 별칭 타입 추가
 
 #### 1-3. 환경 변수 구성
 - `.env.local` 파일 생성 (`.gitignore`에 포함 확인)
 - `.env.example` 파일 작성 (키 이름만 공개)
+- `vite.config.ts` `server.proxy`로 Notion API CORS 우회 설정
 
 ```env
-# Notion
 NOTION_TOKEN=
 NOTION_DATABASE_ID=
-
-# LLM (예: OpenAI)
 OPENAI_API_KEY=
-
-# YouTube (oEmbed는 키 불필요, yt-dlp는 서버 설치)
 ```
 
 #### 1-4. Notion Integration 설정
@@ -75,25 +76,31 @@ OPENAI_API_KEY=
 - PRD 섹션 4 기준 레시피 데이터베이스 스키마 생성
 - Integration을 데이터베이스에 연결(Share) 후 읽기/쓰기 동작 확인
 
+#### 1-5. TypeScript 도메인 타입 정의
+- `src/types/index.ts`에 핵심 타입 중앙 정의
+- `Recipe`, `Category`, `RecipeStatus`, `RecipeFilter`, `ExtractedRecipe`
+
 ### 완료 기준
-- [ ] `npm run dev` 실행 시 Next.js 기본 화면 정상 출력
+- [ ] `npm run dev` 실행 시 빈 홈 화면 정상 출력 (카운터 예제 없음)
+- [ ] `@/components/...` 경로 별칭 임포트 정상 동작
 - [ ] shadcn/ui 컴포넌트 임포트 및 렌더링 확인
 - [ ] Notion DB에 테스트 레코드 수동 생성·조회 성공
-- [ ] `.env.example` 파일에 필요한 키 이름 전부 명시
+- [ ] `tsc --noEmit` 오류 없음
 
 ---
 
 ## Phase 2. 공통 모듈 / 컴포넌트 개발
 
 > **왜 먼저 하는가?**  
-> 핵심 기능(Phase 3)은 Notion 클라이언트·YouTube 추출·타입 정의에 의존한다.  
-> 공통 레이어를 먼저 만들어야 기능 개발 중 중복 코드와 타입 불일치를 막을 수 있다.
+> 핵심 기능(Phase 3)은 Notion 클라이언트·YouTube 추출에 의존한다.  
+> 공통 API 함수를 먼저 만들고, 그 위에 공통 컴포넌트를 쌓아야 기능 개발 중 중복 코드와 타입 불일치를 막을 수 있다.
 
-**예상 소요 시간**: 2~3일
+**예상 소요 시간**: 2~3일  
+**진행 순서**: 공통 API 함수(2-1~2-3) → 공통 컴포넌트(2-4~2-5)
 
 ### 작업 목록
 
-#### 2-1. TypeScript 타입 정의 (`src/types/`)
+#### 2-1. TypeScript 타입 정의 (`src/types/`) — Phase 1에서 완료
 
 ```ts
 // 핵심 타입 예시

@@ -1,0 +1,547 @@
+{
+  "tasks": [
+    {
+      "id": "d296d8b3-9a60-4851-8e70-760a1cb6dbeb",
+      "name": "프로젝트 골격 설정",
+      "description": "서비스 개발을 위한 디렉토리 구조 확립, 경로 별칭 설정, 스타터 예제 코드 제거. 이후 모든 태스크의 기반.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": "vite.config.ts",
+          "type": "TO_MODIFY",
+          "description": "@ 경로 별칭 추가"
+        },
+        {
+          "path": "src/store/useCounterStore.ts",
+          "type": "TO_MODIFY",
+          "description": "삭제 대상"
+        },
+        {
+          "path": "src/pages/HomePage.tsx",
+          "type": "TO_MODIFY",
+          "description": "카운터 예제 제거"
+        }
+      ],
+      "implementationGuide": "1. 빈 디렉토리 생성: src/types/, src/lib/, src/hooks/, src/components/ui/\n2. vite.config.ts resolve.alias 추가: { '@': '/src' }\n3. src/store/useCounterStore.ts 삭제\n4. src/pages/HomePage.tsx에서 카운터 관련 코드 전부 제거 (빈 div 또는 placeholder만 남김)\n5. src/assets/.gitkeep 확인",
+      "verificationCriteria": "npm run dev 정상 실행. HomePage에 카운터 UI 없음. src/types/, src/lib/, src/hooks/, src/components/ui/ 디렉토리 존재.",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "13a583d1-3bb3-4a69-99ca-1dd6a2bc1529",
+      "name": "UI 라이브러리 설치 및 초기화",
+      "description": "shadcn/ui 초기화, Lucide React 설치, tsconfig 경로 별칭 타입 추가.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "d296d8b3-9a60-4851-8e70-760a1cb6dbeb"
+        }
+      ],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "lucide-react 의존성"
+        },
+        {
+          "path": "tsconfig.app.json",
+          "type": "TO_MODIFY",
+          "description": "paths 경로 별칭"
+        },
+        {
+          "path": "src/index.css",
+          "type": "TO_MODIFY",
+          "description": "shadcn/ui 글로벌 스타일"
+        }
+      ],
+      "implementationGuide": "1. npx shadcn@latest init 실행 (Tailwind v4 호환 옵션)\n2. npm install lucide-react\n3. shadcn/ui 기본 컴포넌트 추가: Button, Select, Badge, Checkbox\n4. tsconfig.app.json compilerOptions.paths에 '@/*': ['./src/*'] 추가",
+      "verificationCriteria": "shadcn/ui Button 임포트·렌더링 확인. lucide-react Heart 아이콘 정상 출력. @/components/... 임포트 tsc 오류 없음.",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "c0ba99de-35c3-4583-9529-f422484a3f30",
+      "name": "환경 변수 및 Vite proxy 설정",
+      "description": ".env.local, .env.example 생성. Notion API CORS 우회를 위한 dev server proxy 설정.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": ".env.example",
+          "type": "CREATE",
+          "description": "환경 변수 템플릿"
+        },
+        {
+          "path": ".env.local",
+          "type": "CREATE",
+          "description": "실제 API 키 (커밋 금지)"
+        },
+        {
+          "path": "vite.config.ts",
+          "type": "TO_MODIFY",
+          "description": "Notion API proxy 설정"
+        },
+        {
+          "path": ".gitignore",
+          "type": "REFERENCE",
+          "description": ".env.local 제외 확인"
+        }
+      ],
+      "implementationGuide": "1. .env.example 생성: NOTION_TOKEN=, NOTION_DATABASE_ID=, OPENAI_API_KEY=\n2. .env.local 생성 (실제 값)\n3. vite.config.ts server.proxy 추가: '/api/notion' → { target: 'https://api.notion.com', changeOrigin: true, rewrite: path => path.replace(/^\\/api\\/notion/, '') }\n4. .gitignore에 .env.local 포함 확인",
+      "verificationCriteria": ".env.local이 git status 미추적. /api/notion 요청이 Notion API로 프록시됨.",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "70e47654-1872-4d1d-af8a-5f2dd32ad69c",
+      "name": "Notion Integration 및 레시피 DB 스키마 설정",
+      "description": "Notion 워크스페이스에 Integration 생성 및 PRD 섹션 4 기준 레시피 DB 스키마 구성. Notion 웹 UI 작업 위주.",
+      "notes": "DB ID는 notion.so/워크스페이스/[DB_ID]?v=... 형태로 추출.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": "docs/PRD.md",
+          "type": "REFERENCE",
+          "description": "섹션 4 Notion 스키마 명세"
+        },
+        {
+          "path": ".env.local",
+          "type": "TO_MODIFY",
+          "description": "NOTION_TOKEN, NOTION_DATABASE_ID 저장"
+        }
+      ],
+      "implementationGuide": "1. Notion Settings → Integrations → New integration 생성 → NOTION_TOKEN 복사\n2. 레시피 DB 필드 생성: Title(title), YouTube URL(url), Channel(rich_text), Thumbnail(files), Category(select: 한식/양식/중식/일식/기타), Ingredients(rich_text), Steps(rich_text), Favorite(checkbox), Status(select: 저장됨/만들어봄/보관함), Created At(created_time)\n3. DB를 Integration과 Share 연결\n4. DB ID → NOTION_DATABASE_ID에 저장",
+      "verificationCriteria": "Notion DB에 테스트 레코드 수동 생성·조회 성공. 두 환경 변수 모두 .env.local에 설정 완료.",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "b431b9cb-f163-4519-9d1a-60dcad6d5606",
+      "name": "TypeScript 도메인 타입 정의",
+      "description": "src/types/index.ts에 Recipe, Category, RecipeStatus 등 핵심 타입 중앙 정의. 이후 모든 모듈의 타입 기반.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "d296d8b3-9a60-4851-8e70-760a1cb6dbeb"
+        }
+      ],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": "src/types/index.ts",
+          "type": "CREATE",
+          "description": "도메인 타입 중앙 정의"
+        },
+        {
+          "path": "docs/PRD.md",
+          "type": "REFERENCE",
+          "description": "섹션 4 스키마 기준"
+        }
+      ],
+      "implementationGuide": "src/types/index.ts 생성:\n- type Category = '한식' | '양식' | '중식' | '일식' | '기타'\n- type RecipeStatus = '저장됨' | '만들어봄' | '보관함'\n- interface Recipe { id, title, youtubeUrl, channel, thumbnail, category, ingredients, steps, favorite, status, createdAt }\n- interface RecipeFilter { search?: string, category?: Category, favoriteOnly?: boolean }\n- interface ExtractedRecipe { title, channel, thumbnail, ingredients, steps, category? }",
+      "verificationCriteria": "tsc --noEmit 오류 없음. Recipe 타입 import 후 자동완성 정상 동작.",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "c9a63450-9e7a-4245-9ccf-4b9607f54a13",
+      "name": "Notion API 클라이언트 모듈 구현",
+      "description": "@notionhq/client 래퍼. Notion 응답 → Recipe 변환 유틸과 listRecipes/getRecipe/createRecipe/updateRecipe 함수.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b431b9cb-f163-4519-9d1a-60dcad6d5606"
+        },
+        {
+          "taskId": "c0ba99de-35c3-4583-9529-f422484a3f30"
+        }
+      ],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": "src/lib/notion.ts",
+          "type": "CREATE",
+          "description": "Notion SDK 래퍼"
+        },
+        {
+          "path": "src/types/index.ts",
+          "type": "DEPENDENCY",
+          "description": "Recipe, RecipeFilter 타입"
+        }
+      ],
+      "implementationGuide": "1. @notionhq/client 설치\n2. src/lib/notion.ts 생성\n3. Client 초기화 (baseUrl: '/api/notion' proxy 경유)\n4. notionPageToRecipe(page): Recipe 변환 유틸\n5. listRecipes(filter?: RecipeFilter): Promise<Recipe[]>\n6. getRecipe(id: string): Promise<Recipe>\n7. createRecipe(data: ExtractedRecipe): Promise<Recipe>\n8. updateRecipe(id, patch: Partial<Pick<Recipe,'favorite'|'status'>>): Promise<void>\n9. 429 응답 시 지수 백오프 재시도 (최대 3회)",
+      "verificationCriteria": "listRecipes() 호출 시 Recipe[] 반환. createRecipe() 후 Notion DB 레코드 생성 확인.",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "283ef5a4-8670-4979-995e-6c6d093c5ad0",
+      "name": "YouTube 정보 추출 모듈 구현",
+      "description": "oEmbed API로 메타데이터 수집. URL 유효성 검사 및 video ID 파싱 포함.",
+      "notes": "oEmbed는 클라이언트 직접 호출 가능. yt-dlp는 추후 서버리스 함수에서 처리.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b431b9cb-f163-4519-9d1a-60dcad6d5606"
+        }
+      ],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": "src/lib/youtube.ts",
+          "type": "CREATE",
+          "description": "YouTube 메타데이터 추출 모듈"
+        },
+        {
+          "path": "src/types/index.ts",
+          "type": "DEPENDENCY",
+          "description": "ExtractedRecipe 타입"
+        }
+      ],
+      "implementationGuide": "src/lib/youtube.ts 생성:\n1. extractVideoId(url: string): string | null\n2. isValidYoutubeUrl(url: string): boolean\n3. fetchMetadata(videoId: string): Promise<{title, channel, thumbnail}> - oEmbed 호출\n4. fetchSubtitles(videoId: string): Promise<string> - yt-dlp stub (클라이언트 사이드는 빈 문자열 반환, description fallback)",
+      "verificationCriteria": "유효한 YouTube URL → title·channel·thumbnail 반환. 잘못된 URL → null 반환.",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "86db6995-a983-4486-82df-e657e98df533",
+      "name": "LLM 파싱 모듈 구현",
+      "description": "자막/설명 텍스트 전처리 후 LLM에 전달해 재료·조리 절차를 마크다운으로 파싱.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b431b9cb-f163-4519-9d1a-60dcad6d5606"
+        },
+        {
+          "taskId": "c0ba99de-35c3-4583-9529-f422484a3f30"
+        }
+      ],
+      "createdAt": "2026-04-26T07:53:14.644Z",
+      "updatedAt": "2026-04-26T07:53:14.644Z",
+      "relatedFiles": [
+        {
+          "path": "src/lib/llm.ts",
+          "type": "CREATE",
+          "description": "LLM 파싱 모듈"
+        },
+        {
+          "path": ".env.local",
+          "type": "DEPENDENCY",
+          "description": "OPENAI_API_KEY"
+        }
+      ],
+      "implementationGuide": "src/lib/llm.ts 생성:\n1. preprocessText(text: string): string - 타임스탬프·광고 문구 제거\n2. parseRecipe(text: string): Promise<{ingredients: string, steps: string}>\n   - OpenAI Chat Completions 호출\n   - 시스템 프롬프트: 재료와 조리 절차를 마크다운 목록으로 추출\n   - 실패 시 { ingredients: '', steps: '' } 반환 (throw 금지)",
+      "verificationCriteria": "샘플 자막 전달 시 ingredients·steps 객체 반환. API 오류 시 빈 구조체 반환 (예외 없음).",
+      "analysisResult": "Vite + React 19 + TypeScript 기반 유튜브 요리 레시피 관리 서비스. 개발 순서: 골격(Phase1) → 공통 API 함수(Phase2-1) → 공통 컴포넌트(Phase2-2) → 개별 기능 페이지(Phase3) → 추가 기능(Phase4) → 배포(Phase5). Notion API CORS는 vite proxy로 우회. 주석 한국어, 변수명 camelCase 영어, any 금지."
+    },
+    {
+      "id": "4d4cc3d1-8e02-4dee-9564-b315a46bba3c",
+      "name": "공통 UI 컴포넌트 구현",
+      "description": "RecipeCard, CategoryBadge, LoadingSpinner, ErrorMessage, StatusDropdown 5개 재사용 컴포넌트 구현.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "13a583d1-3bb3-4a69-99ca-1dd6a2bc1529"
+        },
+        {
+          "taskId": "b431b9cb-f163-4519-9d1a-60dcad6d5606"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/components/ui/RecipeCard.tsx",
+          "type": "CREATE",
+          "description": "레시피 카드"
+        },
+        {
+          "path": "src/components/ui/CategoryBadge.tsx",
+          "type": "CREATE",
+          "description": "카테고리 뱃지"
+        },
+        {
+          "path": "src/components/ui/LoadingSpinner.tsx",
+          "type": "CREATE",
+          "description": "로딩 스피너"
+        },
+        {
+          "path": "src/components/ui/ErrorMessage.tsx",
+          "type": "CREATE",
+          "description": "오류 메시지"
+        },
+        {
+          "path": "src/components/ui/StatusDropdown.tsx",
+          "type": "CREATE",
+          "description": "상태 드롭다운"
+        },
+        {
+          "path": "src/types/index.ts",
+          "type": "DEPENDENCY",
+          "description": "Recipe, Category, RecipeStatus"
+        }
+      ],
+      "implementationGuide": "src/components/ui/ 하위 생성:\n- RecipeCard: img(loading=lazy), 제목, 채널, CategoryBadge, Heart 아이콘, /recipe/:id NavLink\n- CategoryBadge: 카테고리별 색상 shadcn/ui Badge\n- LoadingSpinner: Tailwind animate-spin 원형\n- ErrorMessage: AlertCircle 아이콘 + 메시지 + 재시도 버튼\n- StatusDropdown: shadcn/ui Select, RecipeStatus 3개 옵션",
+      "verificationCriteria": "5개 컴포넌트 모두 오류 없이 렌더링. tsc 오류 없음.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "08e63e75-5454-40d8-87a3-5bf257b8415a",
+      "name": "레이아웃 업데이트",
+      "description": "Header에 '+ 레시피 추가' 버튼(/add 링크) 추가. 서비스 브랜딩 반영.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "13a583d1-3bb3-4a69-99ca-1dd6a2bc1529"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/components/layout/Header.tsx",
+          "type": "TO_MODIFY",
+          "description": "로고 텍스트 + 레시피 추가 버튼"
+        }
+      ],
+      "implementationGuide": "src/components/layout/Header.tsx:\n1. 기존 'My Starter Kit' 로고 텍스트 → '유튜브 레시피'로 변경\n2. nav 영역에 shadcn/ui Button 또는 NavLink로 '+ 레시피 추가' 버튼 추가 → /add 링크",
+      "verificationCriteria": "Header에 '+ 레시피 추가' 클릭 시 /add로 이동. 로고 텍스트 변경 확인.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "47cb265a-3108-4879-8514-22be13e92008",
+      "name": "레시피 추가 페이지 구현",
+      "description": "YouTube URL 입력 → 추출 로딩 → 미리보기 → Notion 저장 → 홈 리다이렉트. /add 라우터 등록 포함.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "08e63e75-5454-40d8-87a3-5bf257b8415a"
+        },
+        {
+          "taskId": "c9a63450-9e7a-4245-9ccf-4b9607f54a13"
+        },
+        {
+          "taskId": "283ef5a4-8670-4979-995e-6c6d093c5ad0"
+        },
+        {
+          "taskId": "86db6995-a983-4486-82df-e657e98df533"
+        },
+        {
+          "taskId": "4d4cc3d1-8e02-4dee-9564-b315a46bba3c"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/pages/AddRecipePage.tsx",
+          "type": "CREATE",
+          "description": "레시피 추가 페이지"
+        },
+        {
+          "path": "src/router/index.tsx",
+          "type": "TO_MODIFY",
+          "description": "/add 경로 등록"
+        }
+      ],
+      "implementationGuide": "1. router/index.tsx에 { path: 'add', element: <AddRecipePage /> } 추가\n2. src/pages/AddRecipePage.tsx:\n   - 상태: url, extractedData, isLoading, error\n   - handleExtract(): isValidYoutubeUrl → fetchMetadata → parseRecipe → setExtractedData\n   - handleSave(): createRecipe → navigate('/')\n   - 미리보기: 썸네일, 제목, 채널, 카테고리 Select, 재료/절차 textarea\n   - 추출 중: LoadingSpinner / 실패: ErrorMessage + 수동 입력 fallback",
+      "verificationCriteria": "YouTube URL → 30초 내 재료·절차 미리보기. 저장 후 Notion DB 레코드 생성 및 홈 이동.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "57c04c47-76a9-4372-8e3b-933a90529d5f",
+      "name": "레시피 목록 홈 페이지 구현",
+      "description": "Notion DB 레시피를 4열 카드 그리드와 페이지네이션(12개/페이지)으로 표시.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "08e63e75-5454-40d8-87a3-5bf257b8415a"
+        },
+        {
+          "taskId": "c9a63450-9e7a-4245-9ccf-4b9607f54a13"
+        },
+        {
+          "taskId": "4d4cc3d1-8e02-4dee-9564-b315a46bba3c"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/pages/HomePage.tsx",
+          "type": "TO_MODIFY",
+          "description": "레시피 목록 UI"
+        },
+        {
+          "path": "src/lib/notion.ts",
+          "type": "DEPENDENCY",
+          "description": "listRecipes"
+        },
+        {
+          "path": "src/components/ui/RecipeCard.tsx",
+          "type": "DEPENDENCY",
+          "description": "카드 컴포넌트"
+        }
+      ],
+      "implementationGuide": "src/pages/HomePage.tsx 교체:\n1. useEffect로 listRecipes() 호출\n2. 카드 그리드: grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\n3. RecipeCard 사용\n4. 페이지네이션: 12개/페이지, 이전/다음 버튼\n5. 로딩: LoadingSpinner / 오류: ErrorMessage",
+      "verificationCriteria": "Notion DB 레시피가 카드 그리드로 출력. 12개 초과 시 페이지네이션 동작.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "598a2abe-618f-4759-986c-10ffaf791ac6",
+      "name": "레시피 상세 페이지 구현",
+      "description": "영상 임베드, 재료 체크리스트, 조리 절차, 즐겨찾기·상태 토글. /recipe/:id 라우터 등록 포함.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "57c04c47-76a9-4372-8e3b-933a90529d5f"
+        },
+        {
+          "taskId": "4d4cc3d1-8e02-4dee-9564-b315a46bba3c"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/pages/RecipeDetailPage.tsx",
+          "type": "CREATE",
+          "description": "레시피 상세 페이지"
+        },
+        {
+          "path": "src/router/index.tsx",
+          "type": "TO_MODIFY",
+          "description": "/recipe/:id 등록"
+        }
+      ],
+      "implementationGuide": "1. router/index.tsx에 { path: 'recipe/:id', element: <RecipeDetailPage /> } 추가\n2. src/pages/RecipeDetailPage.tsx:\n   - useParams()로 id → getRecipe(id)\n   - iframe YouTube 임베드\n   - 재료: 줄 파싱 → checkbox 목록\n   - 절차: 번호 목록\n   - Heart 아이콘 토글 → updateRecipe(id, { favorite })\n   - StatusDropdown → updateRecipe(id, { status })\n   - 'Notion에서 열기' 외부 링크",
+      "verificationCriteria": "영상 임베드·재료·절차 정상 렌더링. 즐겨찾기·상태 변경 시 Notion DB 즉시 반영.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "af7b692d-2b9d-4485-b7fe-bc364ce93f08",
+      "name": "검색 및 필터 기능 구현",
+      "description": "검색창(디바운스 300ms), 카테고리 드롭다운, 즐겨찾기 토글 필터. Notion filter 쿼리 연동.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "57c04c47-76a9-4372-8e3b-933a90529d5f"
+        },
+        {
+          "taskId": "c9a63450-9e7a-4245-9ccf-4b9607f54a13"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/hooks/useDebounce.ts",
+          "type": "CREATE",
+          "description": "디바운스 훅"
+        },
+        {
+          "path": "src/store/useFilterStore.ts",
+          "type": "CREATE",
+          "description": "필터 상태 스토어"
+        },
+        {
+          "path": "src/pages/HomePage.tsx",
+          "type": "TO_MODIFY",
+          "description": "필터 바 추가"
+        },
+        {
+          "path": "src/lib/notion.ts",
+          "type": "TO_MODIFY",
+          "description": "filter 쿼리 처리"
+        }
+      ],
+      "implementationGuide": "1. src/hooks/useDebounce.ts 생성\n2. src/store/useFilterStore.ts 생성: { search, category, favoriteOnly }\n3. HomePage 상단 필터 바: 검색창, 카테고리 Select, 즐겨찾기 Toggle\n4. listRecipes()에 RecipeFilter 전달 → Notion filter 쿼리",
+      "verificationCriteria": "검색어 입력 300ms 후 필터링 결과 출력. 카테고리·즐겨찾기 필터 즉시 반영.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "a0859040-d307-4cfb-b724-3e24562c7673",
+      "name": "오류 처리 및 사용자 안내 강화",
+      "description": "자막 없는 영상, 비공개 영상, LLM 실패, 중복 URL 4가지 예외에 대한 안내 메시지·fallback 처리.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "47cb265a-3108-4879-8514-22be13e92008"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/pages/AddRecipePage.tsx",
+          "type": "TO_MODIFY",
+          "description": "예외 처리 추가"
+        }
+      ],
+      "implementationGuide": "AddRecipePage 예외 처리 보강:\n1. 자막 없는 영상: '설명 텍스트로 추출했습니다' 안내 배너\n2. 비공개/삭제 영상: oEmbed 404 → ErrorMessage\n3. LLM 실패: ingredients/steps 빈 값 → 수동 textarea 자동 활성화\n4. 중복 URL: listRecipes()로 검색 → '이미 저장된 레시피입니다' + 기존 링크",
+      "verificationCriteria": "4가지 예외 상황에서 각각 안내 메시지 표시. LLM 실패 시 수동 입력 폼 자동 전환.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "08854db8-655f-4f59-8728-cacb43e7ca51",
+      "name": "성능 최적화 및 반응형 UI 점검",
+      "description": "이미지 lazy load, API 캐싱, 375/768/1280px 레이아웃 점검.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "af7b692d-2b9d-4485-b7fe-bc364ce93f08"
+        },
+        {
+          "taskId": "a0859040-d307-4cfb-b724-3e24562c7673"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "src/components/ui/RecipeCard.tsx",
+          "type": "TO_MODIFY",
+          "description": "lazy 속성 확인"
+        },
+        {
+          "path": "src/pages/HomePage.tsx",
+          "type": "TO_MODIFY",
+          "description": "캐싱 로직"
+        }
+      ],
+      "implementationGuide": "1. RecipeCard img loading='lazy' 확인\n2. listRecipes() 결과 캐싱 (필터 미변경 시 재호출 방지)\n3. DevTools에서 375/768/1280px 레이아웃 확인\n4. Notion API 재시도 로직 동작 확인",
+      "verificationCriteria": "375/768/1280px 레이아웃 이상 없음. 목록 첫 로딩 2초 이내.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    },
+    {
+      "id": "141ef7a8-c706-40e2-bb04-23c119d94c08",
+      "name": "보안 점검 및 Vercel 배포",
+      "description": "API 키 번들 노출 여부 점검 후 Vercel 배포. vercel.json proxy 설정으로 프로덕션 CORS 우회.",
+      "notes": "Vite dev proxy는 프로덕션 미동작 → vercel.json rewrites로 대체.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "08854db8-655f-4f59-8728-cacb43e7ca51"
+        }
+      ],
+      "createdAt": "2026-04-26T07:54:10.408Z",
+      "updatedAt": "2026-04-26T07:54:10.408Z",
+      "relatedFiles": [
+        {
+          "path": "vercel.json",
+          "type": "CREATE",
+          "description": "Vercel rewrites 설정"
+        }
+      ],
+      "implementationGuide": "1. npm run build 후 grep NOTION_TOKEN dist/ → 키 미포함 확인\n2. VITE_ 접두사 없는 환경 변수만 사용 확인\n3. vercel.json 생성: rewrites로 /api/notion → Notion API\n4. Vercel 환경변수 등록: NOTION_TOKEN, NOTION_DATABASE_ID, OPENAI_API_KEY\n5. 배포 후 E2E 전체 흐름 확인",
+      "verificationCriteria": "dist/ 번들에 API 키 미포함. Vercel URL에서 E2E 흐름 정상 동작.",
+      "analysisResult": "Phase 2-2 공통 컴포넌트 → Phase 3 개별 기능 페이지 → Phase 4 추가 기능 → Phase 5 최적화·배포"
+    }
+  ]
+}

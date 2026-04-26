@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import Layout from '../components/layout/Layout'
 import HomePage from '../pages/HomePage'
 import AddRecipePage from '../pages/AddRecipePage'
+import RecipeDetailPage from '../pages/RecipeDetailPage'
 import NotFoundPage from '../pages/NotFoundPage'
 
 /**
@@ -15,6 +16,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'add', element: <AddRecipePage /> },
+      { path: 'recipe/:id', element: <RecipeDetailPage /> },
     ],
   },
   {

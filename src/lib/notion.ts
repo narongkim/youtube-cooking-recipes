@@ -73,8 +73,23 @@ function notionPageToRecipe(page: unknown): Recipe {
   }
 }
 
+/** listRecipes 결과 인메모리 캐시 (TTL 60초) */
+const recipeCache = new Map<string, { data: Recipe[]; ts: number }>()
+const CACHE_TTL = 60_000
+
+function cacheKey(filter?: RecipeFilter): string {
+  return JSON.stringify(filter ?? {})
+}
+
+function invalidateCache() {
+  recipeCache.clear()
+}
+
 /** 레시피 목록 조회 (필터 선택) */
 export async function listRecipes(filter?: RecipeFilter): Promise<Recipe[]> {
+  const key = cacheKey(filter)
+  const hit = recipeCache.get(key)
+  if (hit && Date.now() - hit.ts < CACHE_TTL) return hit.data
   const andFilters: unknown[] = []
 
   if (filter?.search) {
@@ -109,7 +124,9 @@ export async function listRecipes(filter?: RecipeFilter): Promise<Recipe[]> {
     })
   )
 
-  return response.results.map(notionPageToRecipe)
+  const recipes = response.results.map(notionPageToRecipe)
+  recipeCache.set(key, { data: recipes, ts: Date.now() })
+  return recipes
 }
 
 /** 레시피 단건 조회 */
@@ -141,7 +158,23 @@ export async function createRecipe(youtubeUrl: string, data: ExtractedRecipe): P
       },
     })
   )
+  invalidateCache()
   return notionPageToRecipe(page)
+}
+
+/** YouTube URL 중복 확인 — 동일 URL 레시피가 있으면 반환, 없으면 null */
+export async function findRecipeByUrl(youtubeUrl: string): Promise<Recipe | null> {
+  const response = await withRetry(() =>
+    notionFetch<{ results: unknown[] }>(`/databases/${DB_ID}/query`, {
+      method: 'POST',
+      body: {
+        filter: { property: '유튜브 링크', url: { equals: youtubeUrl } },
+        page_size: 1,
+      },
+    })
+  )
+  if (response.results.length === 0) return null
+  return notionPageToRecipe(response.results[0])
 }
 
 /** 즐겨찾기·상태 업데이트 */
